@@ -1,14 +1,8 @@
 /** @param {NS} ns **/
 export async function main(ns) {
-    let serverArray = new Array()
-	//ns.tprint(Object.keys(object))
-    //Todo:
-    //Do a for loop and create a dictionary of the hacknetnodes class and do everything based off of that. 
-	for(let i = 0; i < ns.hacknet.numNodes(); i++){ //Foreach node
-		serverArray.push( new HackNetNodes(i, ns.hacknet.getNodeStats(i).cores, ns.hacknet.getNodeStats(i).ram, ns.hacknet.getNodeStats(i).level))
-	}
-    //ns.tprint(serverArray)
-    await upgradeServers(ns, serverArray)
+    var lol = upgradeServers(ns)
+    var whocares = await lol
+    ns.tprint("After stuff")
 }
 
 function buyCores(ns, hsnode){
@@ -20,8 +14,12 @@ function buyCores(ns, hsnode){
 			corestobuy++;
 		}
 	}
-	ns.print("Index:" + hsnode.index + ", Cores To Buy: " + corestobuy)
-    ns.hacknet.upgradeCore(hsnode.index, corestobuy)
+	ns.print(theTime() + "Index:" + hsnode.index + ", Cores To Buy: " + corestobuy)
+    if(corestobuy > 0){
+        ns.hacknet.upgradeCore(hsnode.index, corestobuy)
+        return corestobuy
+    }
+    else{return 0}
 }
 
 function buyRam(ns, hsnode){
@@ -33,8 +31,13 @@ function buyRam(ns, hsnode){
 			ramtobuy++;
 		}
 	}
-	ns.print("Index:" + hsnode.index + ", Rams To Buy: " + ramtobuy)
-    ns.hacknet.upgradeRam(hsnode.index, ramtobuy)
+	ns.print(theTime() + "Index:" + hsnode.index + ", Rams To Buy: " + ramtobuy)
+    if(ramtobuy > 0 ){
+        ns.hacknet.upgradeRam(hsnode.index, ramtobuy)
+        return ramtobuy
+    }
+    else{return 0}
+    
 }
 
 function buyLevels(ns, hsnode){
@@ -46,20 +49,45 @@ function buyLevels(ns, hsnode){
 			levelstobuy++;
 		}
 	}
-	ns.print("Index:" + hsnode.index + ", Levels To Buy: " + levelstobuy)
-    ns.hacknet.upgradeLevel(hsnode.index, levelstobuy)
+	ns.print(theTime() + "Index:" + hsnode.index + ", Levels To Buy: " + levelstobuy)
+    if(levelstobuy > 0){
+        ns.hacknet.upgradeLevel(hsnode.index, levelstobuy)
+        return levelstobuy
+    }
+    else{return 0}
 }
 
-async function upgradeServers(ns, serverlist){
+async function upgradeServers(ns){
     while(true){
-        serverlist.forEach(hsnode => {
-            buyCores(ns, hsnode);
-            buyRam(ns, hsnode);
-            buyLevels(ns, hsnode)
+        let serverArray = new Array()
+        for(let i = 0; i < ns.hacknet.numNodes(); i++){ //Foreach node
+            serverArray.push( new HackNetNodes(i, ns.hacknet.getNodeStats(i).cores, ns.hacknet.getNodeStats(i).ram, ns.hacknet.getNodeStats(i).level))
+        }
+        let upgrade = 0  
+        serverArray.forEach(hsnode => {
+            upgrade = upgrade + buyCores(ns, hsnode);
+            upgrade = upgrade + buyRam(ns, hsnode);
+            upgrade = upgrade + buyLevels(ns, hsnode)
         })
-        await ns.sleep(120000)
+        let newnode = 0;
+        if(!(upgrade > 0)){
+            if(ns.hacknet.getPurchaseNodeCost() < ns.getPlayer().money)
+            {
+                ns.print(theTime() + "Bought a new node!")
+                ns.hacknet.purchaseNode()
+                newnode = 1
+            }
+        }
+        if(newnode == 0)
+        {
+            await ns.sleep(120000)
+        }
     }
+}
 
+function theTime(){
+    var time = new Date()
+    return "".concat(time.getHours(), ":", time.getMinutes(), ":", time.getSeconds(), ": ")
 }
 
 class HackNetNodes {
