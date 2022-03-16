@@ -8,10 +8,7 @@ export async function main(ns) {
 		serverArray.push( new HackNetNodes(i, ns.hacknet.getNodeStats(i).cores, ns.hacknet.getNodeStats(i).ram, ns.hacknet.getNodeStats(i).level))
 	}
     //ns.tprint(serverArray)
-    serverArray.forEach(hsnode => {
-        buyCores(ns, hsnode);
-        buyRam(ns, hsnode);
-    })
+    await upgradeServers(ns, serverArray)
 }
 
 function buyCores(ns, hsnode){
@@ -23,21 +20,46 @@ function buyCores(ns, hsnode){
 			corestobuy++;
 		}
 	}
-	ns.tprint("Index:" + hsnode.index + ", Cores To Buy: " + corestobuy)
-    //ns.hacknet.upgradeCores(hsnode.index, corestobuy)
+	ns.print("Index:" + hsnode.index + ", Cores To Buy: " + corestobuy)
+    ns.hacknet.upgradeCore(hsnode.index, corestobuy)
 }
 
 function buyRam(ns, hsnode){
 	let ramtobuy = 0;
-	for(let j = ns.hacknet.getNodeStats(hsnode.index).ram; j < 64; j * 2) //Foreach Core that is needed? ? 
+	for(let j = ns.hacknet.getNodeStats(hsnode.index).ram; j < 64; j = j * 2) //Foreach Core that is needed? ? 
 	{
 		if(ns.hacknet.getRamUpgradeCost(hsnode.index, ramtobuy) < ns.getPlayer().money)//How many rams to buy
 		{
 			ramtobuy++;
 		}
 	}
-	ns.tprint("Index:" + hsnode.index + ", Rams To Buy: " + ramtobuy)
-    //ns.hacknet.upgradeCores(hsnode.index, corestobuy)
+	ns.print("Index:" + hsnode.index + ", Rams To Buy: " + ramtobuy)
+    ns.hacknet.upgradeRam(hsnode.index, ramtobuy)
+}
+
+function buyLevels(ns, hsnode){
+	let levelstobuy = 0;
+	for(let j = ns.hacknet.getNodeStats(hsnode.index).level; j < 200; j++) //Foreach Core that is needed? ? 
+	{
+		if(ns.hacknet.getLevelUpgradeCost(hsnode.index, levelstobuy) < ns.getPlayer().money)//How many levels to buy
+		{
+			levelstobuy++;
+		}
+	}
+	ns.print("Index:" + hsnode.index + ", Levels To Buy: " + levelstobuy)
+    ns.hacknet.upgradeLevel(hsnode.index, levelstobuy)
+}
+
+async function upgradeServers(ns, serverlist){
+    while(true){
+        serverlist.forEach(hsnode => {
+            buyCores(ns, hsnode);
+            buyRam(ns, hsnode);
+            buyLevels(ns, hsnode)
+        })
+        await ns.sleep(120000)
+    }
+
 }
 
 class HackNetNodes {
