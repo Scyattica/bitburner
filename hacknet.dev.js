@@ -16,6 +16,7 @@ function buyCores(ns, hsnode){
 	}
 	ns.print(theTime() + "Index:" + hsnode.index + ", Cores To Buy: " + corestobuy)
     if(corestobuy > 0){
+        corestobuy-- //Why is this needed? the for loop runs one additional time then needed to do the evaluation if it can afford it, but still increases even if it can't
         ns.hacknet.upgradeCore(hsnode.index, corestobuy)
         return corestobuy
     }
@@ -33,7 +34,8 @@ function buyRam(ns, hsnode){
 	}
 	ns.print(theTime() + "Index:" + hsnode.index + ", Rams To Buy: " + ramtobuy)
     if(ramtobuy > 0 ){
-        ns.hacknet.upgradeRam(hsnode.index, ramtobuy)
+        ramtobuy-- //Why is this needed? the for loop runs one additional time then needed to do the evaluation if it can afford it, but still increases even if it can't
+        //ns.print(theTime() + "buyRam is: " + ns.hacknet.upgradeRam(hsnode.index, ramtobuy))
         return ramtobuy
     }
     else{return 0}
@@ -51,6 +53,7 @@ function buyLevels(ns, hsnode){
 	}
 	ns.print(theTime() + "Index:" + hsnode.index + ", Levels To Buy: " + levelstobuy)
     if(levelstobuy > 0){
+        levelstobuy = levelstobuy--
         ns.hacknet.upgradeLevel(hsnode.index, levelstobuy)
         return levelstobuy
     }
@@ -71,7 +74,7 @@ async function upgradeServers(ns){
         })
         let newnode = 0;
         if(!(upgrade > 0)){
-            if(ns.hacknet.getPurchaseNodeCost() < ns.getPlayer().money)
+            if(ns.hacknet.getPurchaseNodeCost() < ns.getPlayer().money && serverArray.length < 30)
             {
                 ns.print(theTime() + "Bought a new node!")
                 ns.hacknet.purchaseNode()
