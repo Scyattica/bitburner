@@ -35,6 +35,7 @@ function buyRam(ns, hsnode){
 	ns.print(theTime() + "Index:" + hsnode.index + ", Rams To Buy: " + ramtobuy)
     if(ramtobuy > 0 ){
         ramtobuy-- //Why is this needed? the for loop runs one additional time then needed to do the evaluation if it can afford it, but still increases even if it can't
+        ns.hacknet.upgradeRam(hsnode.index, ramtobuy)
         //ns.print(theTime() + "buyRam is: " + ns.hacknet.upgradeRam(hsnode.index, ramtobuy))
         return ramtobuy
     }
