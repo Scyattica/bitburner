@@ -45,7 +45,7 @@ function buyRam(ns, hsnode){
 
 function buyLevels(ns, hsnode){
 	let levelstobuy = 0;
-	for(let j = ns.hacknet.getNodeStats(hsnode.index).level; j < 200; j++) //Foreach Core that is needed? ? 
+	for(let j = ns.hacknet.getNodeStats(hsnode.index).level; j < 201; j++) //Foreach Core that is needed? ? 
 	{
 		if(ns.hacknet.getLevelUpgradeCost(hsnode.index, levelstobuy) < ns.getPlayer().money)//How many levels to buy
 		{
@@ -54,7 +54,7 @@ function buyLevels(ns, hsnode){
 	}
 	ns.print(theTime() + "Index:" + hsnode.index + ", Levels To Buy: " + levelstobuy)
     if(levelstobuy > 0){
-        levelstobuy = levelstobuy--
+        levelstobuy--
         ns.hacknet.upgradeLevel(hsnode.index, levelstobuy)
         return levelstobuy
     }
