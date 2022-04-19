@@ -7,7 +7,7 @@ export async function main(ns) {
 
 function buyCores(ns, hsnode){
 	let corestobuy = 0;
-	for(let j = ns.hacknet.getNodeStats(hsnode.index).cores; j < 16; j++) //Foreach Core that is needed? ? 
+	for(let j = ns.hacknet.getNodeStats(hsnode.index).cores; j < 17; j++) //Foreach Core that is needed? ? 
 	{
 		if(ns.hacknet.getCoreUpgradeCost(hsnode.index, corestobuy) < ns.getPlayer().money)//How many cores to buy
 		{
@@ -25,7 +25,7 @@ function buyCores(ns, hsnode){
 
 function buyRam(ns, hsnode){
 	let ramtobuy = 0;
-	for(let j = ns.hacknet.getNodeStats(hsnode.index).ram; j < 64; j = j * 2) //Foreach Core that is needed? ? 
+	for(let j = ns.hacknet.getNodeStats(hsnode.index).ram; j < 128; j = j * 2) //Foreach Core that is needed? ? 
 	{
 		if(ns.hacknet.getRamUpgradeCost(hsnode.index, ramtobuy) < ns.getPlayer().money)//How many rams to buy
 		{
@@ -85,6 +85,10 @@ async function upgradeServers(ns){
         if(newnode == 0)
         {
             await ns.sleep(120000)
+        }
+        if(ns.hacknet.numNodes() > 30)
+        {
+            ns.kill(ns.getScriptName(), ns.getHostname());
         }
     }
 }
