@@ -1,6 +1,8 @@
 /** @param {NS} ns **/
 export async function main(ns) {
 	var servername = ns.args[0]
+    var maxMoney = ns.getServerMaxMoney(servername)
+	var minsec = ns.getServerMinSecurityLevel(servername)
 	while(true)
 	{
 		let hackerchance = ns.hackAnalyzeChance(servername)
@@ -25,7 +27,7 @@ export async function main(ns) {
 			}
 			
 		}
-		else if(ns.getServerSecurityLevel(ns.getHostname()) >= minsec)
+		else if(ns.getServerSecurityLevel(servername) >= minsec)
 		{
 			while(ns.hackAnalyzeChance(servername) < .85)
 			{

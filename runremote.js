@@ -1,9 +1,12 @@
 /** @param {NS} ns **/
 export async function main(ns) {
-	var servername = ns.args[0]
-	var maxMoney = ns.getServerMaxMoney(servername)
-	var minsec = ns.getServerMinSecurityLevel(servername)
-	let rammax = ns.getServerMaxRam(servername)
-	let threadcount = parseInt(rammax / 3.45)
-	ns.exec("remotehack.js", servername, threadcount, servername)
+	var servertxt = ns.args[0]
+	let rammax = ns.getServerMaxRam(ns.getHostname())
+	let threadcount = parseInt(rammax / ns.getScriptRam("remotehack.js")) - 1
+	var servers = ns.read(servertxt).split(",")
+	let threadsperscript = threadcount / servers.length
+	for(let server of servers)
+	{
+		ns.exec("remotehack.js", ns.getHostname(), threadsperscript, server)
+	}
 }

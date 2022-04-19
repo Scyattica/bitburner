@@ -17,9 +17,13 @@ export async function main(ns) {
     if(servers.length < 1)
     {
         prefix = prefix + "-0"
-        ns.purchaseServer(prefix, getMaxPurchaseRam(ns))
+           
     }
-    ns.tprint(prefix)
+    else
+    {
+        prefix = prefix + "-" + ns.getPurchasedServers().length
+    }
+    ns.purchaseServer(prefix, getMaxPurchaseRam(ns))
 }
 
 function getMaxPurchaseRam(ns){
