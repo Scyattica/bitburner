@@ -3,6 +3,7 @@ export async function main(ns) {
     let prefix = ns.args[0]
     //ns.tprint(getMaxPurchaseRam(ns))
     let servers = ns.getPurchasedServers()
+    let newservername = ""
     if(prefix == null){
         ns.tprint("bad prefix, dummy!")
         ns.exit()
@@ -16,14 +17,18 @@ export async function main(ns) {
     }
     if(servers.length < 1)
     {
-        prefix = prefix + "-0"
+        newservername = prefix + "-0"
            
     }
     else
     {
-        prefix = prefix + "-" + ns.getPurchasedServers().length
+        newservername = prefix + "-" + ns.getPurchasedServers().length
     }
-    ns.purchaseServer(prefix, getMaxPurchaseRam(ns))
+    let maxram = getMaxPurchaseRam(ns)
+    if(prefix.toLowerCase() != "test"){
+        
+        ns.purchaseServer(newservername, maxram)
+    }
 }
 
 function getMaxPurchaseRam(ns){
