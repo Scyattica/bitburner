@@ -2,29 +2,35 @@
 export async function main(ns) {
 	var filename = ns.args[0]
 	var servers = ns.read(filename).split(",")
-	ns.print(ns.getPlayer().hacking)
-	for(let server of servers){
-		if(ns.getServerRequiredHackingLevel(server) <= ns.getPlayer().hacking){
-			ns.print("Trying " + server + "...")
-			if(!ns.hasRootAccess(server)){
-				ns.print("We don't have root on " + server + "! Fixing...")
-				openPorts(ns, server, ns.getServerNumPortsRequired(server))
-				if(ns.getServerMaxRam(server) > 3.45){
-					ns.print(server + "has enough ram...nuking!")
-					ns.nuke(server)
+	var waitime = 1000
+	while(true)
+	{
+		ns.print(ns.getPlayer().hacking)
+		for(let server of servers){
+			if(ns.getServerRequiredHackingLevel(server) <= ns.getPlayer().hacking){
+				ns.print("Trying " + server + "...")
+				if(!ns.hasRootAccess(server)){
+					ns.print("We don't have root on " + server + "! Fixing...")
+					openPorts(ns, server, ns.getServerNumPortsRequired(server))
+					if(ns.getServerMaxRam(server) > 3.45){
+						ns.print(server + "has enough ram...nuking!")
+						ns.nuke(server)
+					}
+					else{
+						ns.print(server + ": doesn't have enough ram")
+					}
 				}
 				else{
-					ns.print(server + ": doesn't have enough ram")
+					ns.print(server + ": We already have root.")
 				}
 			}
-			else{
-				ns.print(server + ": We already have root.")
+			else
+			{
+				ns.print(server + ": Servers to good! I can't beat it.")
 			}
 		}
-		else
-		{
-			ns.print(server + ": Servers to good! I can't beat it.")
-		}
+		await ns.sleep(waittime) //sleep 30 mins
+		waittime = waittime * 2
 	}
 }
 

@@ -4,22 +4,30 @@ export async function main(ns)
 {
 	var filename = ns.args[0]
 	let serverstxt = ns.args[1]
+	const blacklist = ["run4theh111z", "I.I.I.I", "avmnite-02h"] //servers that dont give me money. 
 	// var servers = ns.scan(ns.getHostname())
-	var servers = ns.read(serverstxt).split(",")
-	for(let server of servers)
-	{
-		if(ns.hasRootAccess(server))
+	while(true){
+		var servers = ns.read(serverstxt).split(",")
+		for(let server of servers)
 		{
-			ns.tprint(server+ ": Script not running!")
-			ns.tprint(server+ ": Writing or Overwriting the script.")
-			await ns.scp(FileList=[filename], "home", server)
-			if(ns.scriptRunning(filename, server))
+			if(!blacklist.includes(server))
 			{
-				ns.kill(filename, server)
+				if(ns.hasRootAccess(server))
+				{
+					ns.tprint(server+ ": Script not running!")
+					ns.tprint(server+ ": Writing or Overwriting the script.")
+					await ns.scp(FileList=[filename], "home", server)
+					if(ns.scriptRunning(filename, server))
+					{
+						ns.kill(filename, server)
+					}
+					StartServerHack(ns, server, filename)
+				}
+	
 			}
-			StartServerHack(ns, server, filename)
+			
 		}
-		
+		await ns.sleep(3600000)
 	}
 }
 

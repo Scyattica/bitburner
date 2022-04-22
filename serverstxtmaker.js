@@ -3,15 +3,17 @@
 export async function main(ns) 
 {
 	var filename = ns.args[0]
-
-	var servertxt = ns.read(filename)
-	
-	
+	let lol = false
+	while(lol == false){
+		lol = await serverstxt(ns, filename)
+		await ns.sleep(1000)
+	}
 }
 
-function serverstxt(ns, serverstxt)
+async function serverstxt(ns, filename)
 {
     var serverSet = new Set()
+	var servertxt = ns.read(filename)
     if(servertxt == "")
 	{
 		var servers = ns.scan(ns.getHostname())
@@ -37,17 +39,18 @@ function serverstxt(ns, serverstxt)
 			
 		}
 	}
-	// await ns.sleep(10000)
 	if(Array.from(serverSet).length == servers.length)
 	{
 		//New Array is the same as the file....found nothing, probably. Will stop now. 
 		ns.print("Stopping as serverSet == servers")
-		ns.exit()
+		return true
 	}
 	else
 	{
 		ns.print("Starting again!")
 		await ns.write("servers.txt", Array.from(serverSet), "w")
-		ns.spawn(ns.getScriptName(), 1, "servers.txt")
+		//ns.spawn(ns.getScriptName(), 1, "servers.txt")
+		return false
 	}
+	return true
 }
