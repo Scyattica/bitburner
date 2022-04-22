@@ -2,7 +2,7 @@
 export async function main(ns) {
 	var filename = ns.args[0]
 	var servers = ns.read(filename).split(",")
-	var waitime = 1000
+	var waittime = 1000
 	while(true)
 	{
 		ns.print(ns.getPlayer().hacking)
