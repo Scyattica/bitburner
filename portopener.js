@@ -6,19 +6,23 @@ export async function main(ns) {
 	while(true)
 	{
 		ns.print(ns.getPlayer().hacking)
+		let canopenports = howManyHackerMans(ns)
 		for(let server of servers){
 			if(ns.getServerRequiredHackingLevel(server) <= ns.getPlayer().hacking){
 				ns.print("Trying " + server + "...")
 				if(!ns.hasRootAccess(server)){
 					ns.print("We don't have root on " + server + "! Fixing...")
-					openPorts(ns, server, ns.getServerNumPortsRequired(server))
-					if(ns.getServerMaxRam(server) > 3.45){
-						ns.print(server + "has enough ram...nuking!")
-						ns.nuke(server)
+					if(canopenports > ns.getServerNumPortsRequired(server)){
+						openPorts(ns, server, ns.getServerNumPortsRequired(server))
+						if(ns.getServerMaxRam(server) > 3.45){
+							ns.print(server + "has enough ram...nuking!")
+							ns.nuke(server)
+						}
+						else{
+							ns.print(server + ": doesn't have enough ram")
+						}
 					}
-					else{
-						ns.print(server + ": doesn't have enough ram")
-					}
+					else{ns.print("Don't have enough port openers!")}
 				}
 				else{
 					ns.print(server + ": We already have root.")
@@ -54,16 +58,29 @@ function openPorts(ns, server, numPorts){
 			ns.brutessh(server)
 			ns.httpworm(server)
 			ns.ftpcrack(server)
-			ns.sqlinject(server)
+			ns.relaysmtp(server)
 			break
 		case 5:
 			ns.brutessh(server)
 			ns.httpworm(server)
 			ns.ftpcrack(server)
-			ns.sqlinject(server)
 			ns.relaysmtp(server)
+			ns.sqlinject(server)
 			break
 		default:
 			ns.print("openPorts: Um....What? Bad numPorts arg")
 	}
+}
+
+function howManyHackerMans(ns){
+	const hackermanprogs = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe "]
+	let num = 0
+	for(let prog in hackermanprogs)
+	{
+		if(ns.fileExists(prog))
+		{
+			num++
+		}
+	}
+	return num
 }
