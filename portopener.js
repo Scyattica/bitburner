@@ -34,7 +34,15 @@ export async function main(ns) {
 			}
 		}
 		await ns.sleep(waittime) //sleep 30 mins
-		waittime = waittime * 2
+		if(waittime >= 1800000)
+		{
+			waittime = 1800000
+		}
+		else
+		{
+			waittime = waittime * 2
+		}
+		
 	}
 }
 
