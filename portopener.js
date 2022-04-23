@@ -83,12 +83,18 @@ function openPorts(ns, server, numPorts){
 function howManyHackerMans(ns){
 	const hackermanprogs = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe "]
 	let num = 0
-	for(let prog in hackermanprogs)
-	{
+
+	hackermanprogs.forEach((prog) => {
 		if(ns.fileExists(prog))
 		{
+			ns.print(prog +  "exists!")
 			num++
 		}
-	}
+		else
+		{
+			ns.print(prog + " Doesn't exist!")
+		}
+	})
 	return num
+
 }
